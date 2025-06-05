@@ -2,6 +2,7 @@ from heapq import heappush, heappop
 from itertools import count
 from components.node import Node
 from components.state import State
+from components.utils import calculate_cable_cost
 
 def dijkstra_multi_goal(problem, explored_steps=None):
     """
@@ -71,7 +72,10 @@ def dijkstra_multi_goal(problem, explored_steps=None):
                         raise ValueError(f"No se encontró acción de {src} a {dst} al reconstruir la ruta en dijkstra_multi_goal.")
                     n = Node(state=nodes_dict[dst], parent=prev, action=None, cost=total_cost)
                 prev = n
-            prev.cost = cost  # El nodo final tiene el costo total
+            
+            # Calcular el costo real de cables únicos
+            real_cable_cost = calculate_cable_cost(prev, problem)
+            prev.cost = real_cable_cost  # Actualizar con el costo real de cables
             return prev
 
         if explored_steps is not None:

@@ -1,6 +1,6 @@
 from components.node import Node
 from components.problem import Problem
-from components.utils import get_root_node, print_path
+from components.utils import get_root_node, print_path, calculate_cable_cost
 
 
 def multi_ucs(problem: Problem, explored_steps=None) -> Node | None:
@@ -44,7 +44,8 @@ def multi_ucs(problem: Problem, explored_steps=None) -> Node | None:
         
         # Si ya cubrimos todos los objetivos se retorna la solución
         if node.visited == targets:
-            #print_path(node)
+            # Calcular y actualizar el costo real de cables únicos
+            node.cost = calculate_cable_cost(node, problem)
             return node
         
         # Generamos a los nodos hijo

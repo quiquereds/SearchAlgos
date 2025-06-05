@@ -1,4 +1,4 @@
-from components.utils import get_root_node, print_path
+from components.utils import get_root_node, print_path, calculate_cable_cost
 from components.problem import Problem
 from components.node import Node
 import heapq
@@ -59,7 +59,8 @@ def astar(problem: Problem, explored_steps=None) -> Node | None:
         
         # Realizamos una comprobación para ver si se cubrieron todos los objetivod
         if node.visited == targets:
-            #print_path(node)
+            # Calcular y actualizar el costo real de cables únicos
+            node.cost = calculate_cable_cost(node, problem)
             return node # Si se encontró solución, la devolvemos
         
         # Eliminamos el nodo si el coste g ya no es óptimo
