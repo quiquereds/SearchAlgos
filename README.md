@@ -284,7 +284,6 @@ Esta heurística presentaba problemas de **sobreestimación** en problemas multi
 - Para el Problema 4 (nodos 0-37, objetivos: 0,1,7,15,22,23,24)
 - Costos reales de aristas: rango 1.5-6.0
 - Heurística original daba valores como 22, 15, 7 para distancias entre nodos
-- **Resultado:** A* rendía peor que Dijkstra debido a decisiones subóptimas
 
 **Heurística mejorada con factor de seguridad:**
 ```python
@@ -305,10 +304,6 @@ def _create_distance_heuristic(self):
 
 1. **Principio de admisibilidad:** h(n) ≤ h*(n) donde h*(n) es el costo real mínimo
 2. **Prevención de sobreestimación:** El factor 0.5 actúa como margen de seguridad
-3. **Rendimiento observado:** 
-   - ~80% de estimaciones son admisibles (subestiman)
-   - ~20% pueden sobreestimar en conexiones directas con grandes diferencias de ID
-   - **Resultado global:** A* supera consistentemente a Dijkstra
 
 **Comportamiento en problemas multi-objetivo:**
 
@@ -390,7 +385,7 @@ def astar(problem: Problem, explored_steps=None) -> Node | None:
             heapq.heappush(frontier, (f_child, next(counter), child))
     
     return None
-```
+
 
 #### 4.2.2 Algoritmo Dijkstra
 
