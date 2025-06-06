@@ -16,7 +16,6 @@ Los algoritmos de búsqueda en grafos constituyen una base fundamental en cienci
 - **Objetivos Específicos:**
   - Implementar algoritmos clásicos de búsqueda no informada e informada
   - Desarrollar extensiones multi-objetivo para UCS y Dijkstra
-  - Crear un sistema de visualización interactiva y animaciones educativas
   - Establecer un framework de benchmarking para análisis comparativo de rendimiento
 
 ### 1.3 Contribuciones principales
@@ -488,12 +487,12 @@ def multi_ucs(problem: Problem, explored_steps=None) -> Node | None:
 
 #### 4.3.2 Dijkstra Multi-Objetivo (Contribución Principal)
 
-**Mejoras Implementadas:**
+**Mejoras realizadas:**
 
-1. **Optimización con heapq:** Uso de cola de prioridad binaria para mejor rendimiento
-2. **Evitación de Comparaciones Problemáticas:** Contador único para evitar comparaciones entre objetos State
-3. **Reconstrucción Optimizada:** Construcción eficiente de la cadena de nodos enlazados
-4. **Registro Detallado:** Información completa de trazabilidad para análisis
+1. **Optimización con heapq:** Uso de cola de prioridad para mejor rendimiento
+2. **Evitación de comparaciones:** Contador único para evitar comparaciones entre objetos State
+
+
 
 **Algoritmo:**
 ```python
@@ -562,7 +561,7 @@ def dijkstra_multi_goal(problem, explored_steps=None):
     return None
 ```
 
-**Ventajas de la Implementación:**
+**Ventajas de la implementación:**
 
 1. **Rendimiento Mejorado:** 
    - Uso de heapq reduce complejidad de operaciones de cola de prioridad de O(n) a O(log n)
@@ -572,19 +571,12 @@ def dijkstra_multi_goal(problem, explored_steps=None):
    - Manejo correcto de comparaciones entre objetos
    - Prevención de errores por objetos no comparables
 
-3. **Trazabilidad:**
-   - Registro completo de pasos explorados
-   - Información detallada para visualización y debugging
-
-4. **Compatibilidad:**
-   - Retorna objetos Node compatibles con el resto del framework
-   - Mantiene interfaz consistente con otros algoritmos
 
 ## 5. Casos de Estudio y Validación
 
-### 5.1 Batería de Problemas de Prueba
+### 5.1 Conjunto de problemas de prueba
 
-#### Problem 1: Grafo Básico (Validación de construcción)
+#### Problem 1: Grafo básico (Validación de construcción)
 ```
 Nodos: A, B, C, D, E, F, G, H, I, J
 Objetivo Único: A → G
@@ -592,24 +584,22 @@ Multi-Objetivo: Visitar A, D, G, J
 Propósito: Validación de implementaciones básicas
 ```
 
-#### Problem 2: Red Intermedia (Análisis de escalabilidad)
+#### Problem 2: Red intermedia (Análisis de escalabilidad)
 ```
 Nodos: 10+ estados interconectados
 Costos: Variables con múltiples caminos alternativos
 Propósito: Comparación de eficiencia algorítmica
 ```
 
-#### Problem 3: Grafo Complejo (Ánalisis de problemas complejos)
+#### Problem 3: Ánalisis de problemas complejos
 ```
 Nodos: A-T (20 estados)
-Conexiones: Densas con costos heterogéneos
 Multi-Objetivo: Visitar M, P, T desde A
 Propósito: Análisis de rendimiento en grafos complejos
 ```
 
-#### Problem 4: Optimización de Instalación de Cables (Caso de Estudio Principal)
+#### Problem 4: Optimización de instalación de cables (Extraído de tesis)
 ```
-Descripción: Red de telecomunicaciones con optimización de cableado
 Nodos: 0-37 (38 nodos totales)
 Objetivos: '0', '1', '7', '15', '22', '23', '24'
 Escenario: Instalación óptima de cables minimizando costo total
@@ -617,19 +607,17 @@ Costos de aristas: 1.5-6.0 metros de cable
 Heurística: abs(node_id - target_id) * 0.5
 ```
 
-**Características especiales del Problema 4:**
+**Características:**
 - **Reutilización de cables:** Una vez instalado, un cable puede usarse sin costo adicional
 - **Optimización económica:** Diferencia entre costo algorítmico y costo real de infraestructura
 - **Análisis de eficiencia:** Comparación A* vs Dijkstra con heurística optimizada
 
 **Resultados con heurística mejorada:**
 - A* supera consistentemente a Dijkstra en tiempo y exploración de nodos
-- Factor 0.5 previene sobreestimación en ~80% de casos
 - Mejora significativa respecto a heurística original sin factor
 
-#### Problem 5: Red de Distribución de Gran Escala
+#### Problem 5: Optimización de instalación de cables (Extraído de tesis)
 ```
-Descripción: Red de distribución compleja de gran escala
 Nodos: 1-61 (61 nodos totales)
 Objetivos: '1', '2', '3', '4', '5', '6', '14', '15', '24', '25', '26', '27', '28', '50'
 Escenario: Optimización de rutas de distribución
@@ -640,8 +628,7 @@ Propósito: Análisis de escalabilidad en redes grandes
 **Metodología de evaluación para ambos problemas:**
 - **Costo algorítmico:** Suma de costos de todas las aristas recorridas
 - **Costo real de cables:** Suma de costos de aristas únicas utilizadas
-- **Ahorro de cable:** Diferencia entre costo algorítmico y costo real
-- **Eficiencia de instalación:** Minimización de cable total necesario
+- **Eficiencia:** Minimización de cable total necesario
 
 #### Adaptaciones para construcción de soluciones
 
@@ -678,15 +665,14 @@ metrics = PerformanceMetrics(
 ```
 
 
-## 6. Sistema de benchmarking y análisis avanzado
+## 6. Benchmark
 
-### 6.1 Framework de evaluación integral
+### 6.1 Módulo de evaluación
 
-El sistema de benchmarking ha sido completamente rediseñado para proporcionar análisis profesional y monitoreo en tiempo real:
+Se incopora un módulo de análisis que permite ver en tiempo real la ejecución de los algoritmos de búsqueda. Una vez finaliza, el módulo reporta estadísticas sobre cada algoritmo tales como costo, nodos solución, nodos explorados y uso de memoria,
 
-#### 6.1.1 Estructura del sistema enhanced_benchmark.py
+#### 6.1.1 Clase principal del módulo
 
-**PerformanceMetrics (Dataclass):**
 ```python
 @dataclass
 class PerformanceMetrics:
@@ -703,40 +689,23 @@ class PerformanceMetrics:
     error_description: Optional[str] = None
 ```
 
-**AlgorithmMonitor (Monitoreo en tiempo real):**
+**Monitoreo en tiempo real:**
 - Seguimiento de progreso con actualización cada 0.5 segundos
 - Conteo de nodos procesados
-- Monitoreo de mejor solución actual
-- Thread independiente para no afectar rendimiento
+- Se usa un hilo independiente para no afectar la ejecución
 
-#### 6.1.2 Función principal de benchmark
 
-```python
-def execute_comprehensive_benchmark(
-    problem_instance: Problem,
-    algorithm_suite: Dict[str, Callable],
-    enable_realtime_monitoring: bool = True,
-    verbose_output: bool = True
-) -> List[PerformanceMetrics]:
-```
+### 6.2 Métricas de evaluación
 
-**Características destacadas:**
-- **Monitoreo de memoria:** Uso de `tracemalloc` para seguimiento preciso
-- **Manejo de errores:** Captura y reporte de excepciones por algoritmo
-- **Compatibilidad:** Soporte para callbacks de progreso opcionales
-- **Formateo inteligente:** Tiempo (ns, μs, ms, s) y memoria (B, KB, MB, GB)
-
-### 6.2 Métricas de evaluación avanzadas
-
-**Métricas Primarias:**
-- **Tiempo de ejecución:** Medición de alta precisión con `time.perf_counter()`
+**Métricas primarias:**
+- **Tiempo de ejecución:** Medición del tiempo de ejecución
 - **Costo algorítmico:** Suma total de costos de la ruta encontrada
 - **Costo real de cables:** Cálculo de cables únicos sin duplicación (ver sección 6.3)
 - **Uso de memoria:** Memoria pico durante la ejecución
 - **Eficiencia de exploración:** Nodos explorados por segundo
 - **Longitud de camino:** Número de nodos en la solución
 
-**Métricas Secundarias:**
+**Métricas secundarias:**
 - **Tasa de éxito:** Porcentaje de algoritmos que encontraron solución
 - **Ahorro de cable:** Diferencia entre costo algorítmico y costo real
 - **Análisis de convergencia:** Iteraciones hasta encontrar solución óptima
@@ -745,7 +714,7 @@ def execute_comprehensive_benchmark(
 
 #### 6.3.1 Cálculo de costo real de cables
 
-Para problemas de instalación de cables, se implementó un sistema de cálculo de costos que refleja la realidad de la infraestructura:
+Para problemas de instalación de cables, se implementó una función que toma el camino solución que genera el algoritmo para realizar una comprobación de costo empleando únicamente las aristas únicas.
 
 ```python
 def calculate_cable_cost(node: Node, problem: Problem) -> float:
@@ -774,10 +743,6 @@ def calculate_cable_cost(node: Node, problem: Problem) -> float:
     return total_cable_cost
 ```
 
-**Ventajas del sistema:**
-- **Realismo:** Los cables instalados pueden reutilizarse sin costo adicional
-- **Optimización:** Permite comparar rutas con retornos vs. rutas directas
-- **Análisis económico:** Diferencia entre costo algorítmico y costo real de infraestructura
 
 #### 6.3.2 Integración con algoritmos multi-objetivo
 
@@ -791,7 +756,7 @@ solution_node.cost = real_cable_cost  # Actualizar con costo real
 
 ### 6.4 Visualización y reportes
 
-#### 6.4.1 Reporte integral profesional
+#### 6.4.1 Reporte de ejecución
 
 ```python
 def generate_comprehensive_report(
@@ -802,9 +767,9 @@ def generate_comprehensive_report(
 ```
 
 **Características del reporte:**
-- **Análisis por ranking:** Medallería (🥇🥈🥉) basada en costo y tiempo
+- **Análisis por ranking:** Se emplea ranking basado en costo y tiempo
 - **Métricas detalladas:** Tiempo, costo, memoria, eficiencia
-- **Análisis de fallos:** Reporte detallado de algoritmos que no encontraron solución
+- **Análisis de fallos:** Reporte de algoritmos que no encontraron solución
 - **Estadísticas globales:** Mejor costo, tiempo más rápido, tiempo promedio
 - **Identificación de eficiencia:** Algoritmo con mejor balance costo-tiempo
 
@@ -823,13 +788,12 @@ def generate_comprehensive_report(
 - Megabytes (< 1GB): `342.18MB`
 - Gigabytes: `1.25GB`
 
-## 8. Implementaciones técnicas avanzadas
+## 8. Implementaciones
 
-### 8.1 Optimizaciones algorítmicas implementadas
+### 8.1 Optimizaciones implementadas
 
 #### 8.1.1 Heurística adaptativa para A*
 - **Factor de seguridad 0.5:** Previene sobreestimación en problemas multi-objetivo
-- **Admisibilidad mejorada:** ~80% de estimaciones son admisibles
 - **Rendimiento superior:** A* supera consistentemente a Dijkstra con la heurística optimizada
 
 #### 8.1.2 Cálculo de costos reales
@@ -842,49 +806,13 @@ def generate_comprehensive_report(
 - **Memoria:** Monitoreo de uso pico con tracemalloc
 - **Eficiencia:** Cálculo de nodos explorados por segundo
 
-### 8.2 Arquitectura del sistema mejorado
-
-```
-SearchAlgos/
-├── algorithms/              # Algoritmos optimizados
-│   ├── astar.py            # A* con heurística mejorada
-│   ├── dijkstra_multi_goal.py # Dijkstra para multi-objetivo
-│   └── ucs_multi_goal.py   # UCS para multi-objetivo
-├── components/
-│   ├── enhanced_benchmark.py # Sistema de benchmarking profesional
-│   ├── utils.py            # Cálculo de costos reales
-│   └── visualization.py   # Visualización avanzada
-└── problems/
-    ├── problem_4_v2.py     # Problema de cables optimizado
-    └── problem_5_v2.py     # Red de gran escala
-```
-
-### 8.3 Flujo de evaluación integral
+### 8.2 Flujo de evaluación
 
 1. **Inicialización:** Configuración de problema con heurística optimizada
-2. **Monitoreo:** Inicio de seguimiento en tiempo real
-3. **Ejecución:** Algoritmo con callbacks de progreso opcionales
-4. **Análisis:** Cálculo de métricas algorítmicas y reales
-5. **Reporte:** Generación de análisis comparativo profesional
+2. **Ejecución:** Algoritmo visualización en tiempo real
+3. **Análisis:** Cálculo de métricas
+4. **Reporte:** Generación de análisis comparativo
 
-### 8.4 Métricas de calidad implementadas
-
-**Algoritmos individuales:**
-- Tiempo de ejecución con precisión de nanosegundos
-- Costo de solución (algorítmico y real)
-- Uso de memoria pico
-- Nodos explorados y eficiencia
-
-**Análisis comparativo:**
-- Ranking por costo y tiempo
-- Identificación del algoritmo más eficiente
-- Análisis de fallos y errores
-- Estadísticas globales (mejor, promedio, más rápido)
-
-**Optimizaciones de infraestructura:**
-- Ahorro de cable (diferencia entre costo algorítmico y real)
-- Eficiencia de instalación
-- Análisis de reutilización de rutas
 
 ## 9. Módulo de visualización
 
@@ -915,7 +843,7 @@ def plot_graph_and_path_nx(nodes, actions, costs, path=None):
 - Integración nativa con algoritmos de grafos
 - Capacidades de exportación a múltiples formatos
 
-#### 9.1.2 Plotly Interactive
+#### 9.1.2 Plotly
 ```python
 def plot_graph_and_path(nodes, actions, costs, path=None):
     # Posicionamiento circular para claridad visual
@@ -1019,8 +947,7 @@ def run_and_animate_nx(problem, algorithm, nodes, actions, costs, speed='normal'
 ### 10.4 Direcciones futuras
 
 - **Heurísticas adaptativas:** Desarrollo de factores dinámicos basados en topología de red
-- **Paralelización:** Implementación de algoritmos concurrentes para redes masivas
-- **Machine Learning:** Integración de heurísticas aprendidas automáticamente
+- **Paralelización:** Implementación de algoritmos concurrentes para redes de mayor tamaño
 - **Optimización multi-criterio:** Extensión a problemas con múltiples objetivos simultáneos
 
 
