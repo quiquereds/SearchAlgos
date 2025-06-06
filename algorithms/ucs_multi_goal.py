@@ -3,7 +3,7 @@ from components.problem import Problem
 from components.utils import get_root_node, print_path, calculate_cable_cost
 
 
-def multi_ucs(problem: Problem, explored_steps=None) -> Node | None:
+def multi_ucs(problem: Problem, explored_steps=None, progress_callback=None) -> Node | None:
     """
     Realiza búsqueda por coste uniforme (UCS) para encontrar un trayecto que visite todos los estados objetivo.
     Si explored_steps se proporciona, almacena los pasos de exploración (pares padre-hijo).
@@ -30,6 +30,7 @@ def multi_ucs(problem: Problem, explored_steps=None) -> Node | None:
     frontier: list[Node] = [root]
     # Estados explorados: Se hace un mapa (estado, visited) -> mejor coste g
     explored: dict[tuple[str, frozenset[str]], float] = {}
+    nodes_explored = 0
     
     while frontier:
         # Escogemos al nodo con menor coste
@@ -41,6 +42,11 @@ def multi_ucs(problem: Problem, explored_steps=None) -> Node | None:
         if explored.get(key, float("inf")) <= node.cost:
             continue
         explored[key] = node.cost
+        nodes_explored += 1
+        
+        # Callback para progreso en tiempo real
+        if progress_callback and nodes_explored % 10 == 0:
+            progress_callback(nodes_explored, node.cost)
         
         # Si ya cubrimos todos los objetivos se retorna la solución
         if node.visited == targets:

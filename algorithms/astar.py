@@ -4,7 +4,7 @@ from components.node import Node
 import heapq
 import itertools
 
-def astar(problem: Problem, explored_steps=None) -> Node | None:
+def astar(problem: Problem, explored_steps=None, progress_callback=None) -> Node | None:
     """
     Combina coste acumulado g(n) y heurística mínima hacia objetivos restantes h(n), expandiendo nodos con menor
     f(n) = g + H.
@@ -51,11 +51,17 @@ def astar(problem: Problem, explored_steps=None) -> Node | None:
     best_g: dict[tuple[str, frozenset[str]], float] = {
         (root.state.name, root.visited): 0.0
     }
+    nodes_explored = 0
 
     while frontier:
         f, _, node = heapq.heappop(frontier)        # Extraemos el nodo con menor f
         g = node.cost                               # Obtenemos el coste acumulado al nodo
         key = (node.state.name, node.visited)
+        nodes_explored += 1
+        
+        # Callback para progreso en tiempo real
+        if progress_callback and nodes_explored % 10 == 0:
+            progress_callback(nodes_explored, g)
         
         # Realizamos una comprobación para ver si se cubrieron todos los objetivod
         if node.visited == targets:

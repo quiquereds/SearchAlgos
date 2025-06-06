@@ -4,7 +4,7 @@ from components.node import Node
 from components.state import State
 from components.utils import calculate_cable_cost
 
-def dijkstra_multi_goal(problem, explored_steps=None):
+def dijkstra_multi_goal(problem, explored_steps=None, progress_callback=None):
     """
     Algoritmo Dijkstra Multi-Objetivo
     ---------------------------------
@@ -37,6 +37,7 @@ def dijkstra_multi_goal(problem, explored_steps=None):
     counter = count()
     heappush(heap, (0, next(counter), start, frozenset(goals), [start]))
     visited = {}
+    nodes_explored = 0
 
     while heap:
         cost, _, node, goals_left, path = heappop(heap)
@@ -44,6 +45,11 @@ def dijkstra_multi_goal(problem, explored_steps=None):
         if state in visited and visited[state] <= cost:
             continue
         visited[state] = cost
+        nodes_explored += 1
+        
+        # Callback para progreso en tiempo real
+        if progress_callback and nodes_explored % 10 == 0:
+            progress_callback(nodes_explored, cost)
 
         if node in goals_left:
             goals_left = goals_left - {node}
