@@ -50,7 +50,7 @@ class AlgorithmMonitor:
         while self.is_monitoring_active:
             elapsed_time = time.perf_counter() - self.start_timestamp
             progress_info = (
-                f"\r🔍 {self.algorithm_name}: "
+                f"\r{self.algorithm_name}: "
                 f"{elapsed_time:.1f}s | "
                 f"Nodos procesados: {self.nodes_processed:,} "
             )
@@ -112,7 +112,7 @@ def format_memory_usage(bytes_value: float) -> str:
         return f"{bytes_value/(1024**3):.2f}GB"
 
 
-def execute_comprehensive_benchmark(
+def execute_benchmark(
     problem_instance: Problem,
     algorithm_suite: Dict[str, Callable[[Problem], object]],
     enable_realtime_monitoring: bool = True,
@@ -133,10 +133,10 @@ def execute_comprehensive_benchmark(
     performance_results = []
     
     if verbose_output:
-        print("INICIANDO EVALUACIÓN DE ALGORITMOS [...]")
+        print("INICIANDO EVALUACIÓN [...]")
         print("=" * 70)
-        print(f"📊 Algoritmos a evaluar: {len(algorithm_suite)}")
-        print(f"🎯 Nodos objetivo: {len(problem_instance.targets)}")
+        print(f"Algoritmos a evaluar: {len(algorithm_suite)}")
+        print(f"Nodos objetivo: {len(problem_instance.targets)}")
         print("=" * 70)
     
     for algorithm_index, (algorithm_name, algorithm_function) in enumerate(algorithm_suite.items(), 1):
@@ -206,12 +206,12 @@ def execute_comprehensive_benchmark(
                 
                 if verbose_output:
                     print(f"✅ Ejecución completada")
-                    print(f"   ⏱️  Tiempo: {format_execution_time(total_execution_time)}")
-                    print(f"   💰 Costo de la solución: {solution_cost:.3f}")
-                    print(f"   🛤️  Longitud del camino: {len(solution_path)} nodos")
-                    print(f"   💾 Memoria pico usada: {format_memory_usage(peak_memory)}")
+                    print(f"    Tiempo: {format_execution_time(total_execution_time)}")
+                    print(f"    Costo de la solución: {solution_cost:.3f}")
+                    print(f"    Longitud del camino: {len(solution_path)} nodos")
+                    print(f"    Memoria pico usada: {format_memory_usage(peak_memory)}")
                     if metrics.nodes_explored_count > 0:
-                        print(f"   🔍 Nodos explorados: {metrics.nodes_explored_count:,}")
+                        print(f"Nodos explorados: {metrics.nodes_explored_count:,}")
                 
             else:
                 metrics = PerformanceMetrics(
@@ -266,9 +266,9 @@ def print_enhanced_results(results: List[PerformanceMetrics], problem_name: str 
     """
     clear_terminal_screen()
     
-    print("🎯 RESULTADOS DEL BENCHMARK")
+    print("RESULTADOS")
     if problem_name:
-        print(f"📋 Problema: {problem_name}")
+        print(f"Problema: {problem_name}")
     print("=" * 80)
     
     # Separar exitosos y fallidos
@@ -279,43 +279,27 @@ def print_enhanced_results(results: List[PerformanceMetrics], problem_name: str 
         # Ordenar por costo y luego por tiempo
         successful.sort(key=lambda x: (x.cost, x.execution_time))
         
-        print("\n✅ ALGORITMOS EXITOSOS:")
+        print("\nALGORITMOS EVALUADOS:")
         print("-" * 80)
         
         for i, result in enumerate(successful, 1):
             medal = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else "  "
             
             print(f"{medal} {result.algorithm}")
-            print(f"   ⏱️  Tiempo: {format_execution_time(result.execution_time)}")
-            print(f"   💰 Costo: {result.cost:.2f}")
-            print(f"   🛤️  Ruta ({result.path_length} nodos): {result.route}")
-            print(f"   💾 Memoria pico: {format_memory_usage(result.memory_peak * 1024 * 1024)}")
+            print(f"    Tiempo: {format_execution_time(result.execution_time)}")
+            print(f"    Costo: {result.cost:.2f}")
+            print(f"    Ruta ({result.path_length} nodos): {result.route}")
+            print(f"    Memoria pico: {format_memory_usage(result.memory_peak * 1024 * 1024)}")
             if result.nodes_explored > 0:
-                print(f"   🔍 Nodos explorados: {result.nodes_explored}")
+                print(f"    Nodos explorados: {result.nodes_explored}")
             print()
     
     if failed:
-        print("❌ ALGORITMOS FALLIDOS:")
+        print("ALGORITMOS FALLIDOS:")
         print("-" * 40)
         for result in failed:
             print(f"   {result.algorithm}: {result.error_message or 'Sin solución'}")
         print()
-    
-    # Estadísticas generales
-    if successful:
-        best_cost = min(r.cost for r in successful)
-        fastest_time = min(r.execution_time for r in successful)
-        avg_time = sum(r.execution_time for r in successful) / len(successful)
-        
-        print("📊 ESTADÍSTICAS:")
-        print("-" * 40)
-        print(f"   🏆 Mejor costo: {best_cost:.2f}")
-        print(f"   ⚡ Tiempo más rápido: {format_execution_time(fastest_time)}")
-        print(f"   📈 Tiempo promedio: {format_execution_time(avg_time)}")
-        
-        # Encontrar el más eficiente (mejor balance costo-tiempo)
-        best_efficiency = min(successful, key=lambda x: x.cost + x.execution_time * 10)
-        print(f"   🎯 Más eficiente: {best_efficiency.algorithm}")
 
 
 def run_problem_comparison(problems: Dict[str, Problem], algorithms: Dict[str, Callable]):
@@ -325,8 +309,8 @@ def run_problem_comparison(problems: Dict[str, Problem], algorithms: Dict[str, C
     all_results = {}
     
     for prob_name, problem in problems.items():
-        print(f"\n🧩 Procesando: {prob_name}")
-        results = execute_comprehensive_benchmark(problem, algorithms)
+        print(f"\nProcesando: {prob_name}")
+        results = execute_benchmark(problem, algorithms)
         all_results[prob_name] = results
         
         # Mostrar resultados inmediatamente
@@ -336,10 +320,11 @@ def run_problem_comparison(problems: Dict[str, Problem], algorithms: Dict[str, C
     return all_results
 
 
-def generate_comprehensive_report(
+def generate_report(
     performance_metrics: List[PerformanceMetrics], 
     problem_description: str = "",
-    export_format: str = "console"
+    export_format: str = "console",
+    clear_screen: bool = True
 ) -> None:
     """
     Genera un reporte integral y profesional de los resultados del benchmark
@@ -349,14 +334,15 @@ def generate_comprehensive_report(
         problem_description: Descripción del problema evaluado
         export_format: Formato de salida ("console", "markdown", "latex")
     """
-    clear_terminal_screen()
+    if clear_screen:
+        clear_terminal_screen()
     
     # Encabezado principal
-    print("📊 REPORTE INTEGRAL DE EVALUACIÓN DE ALGORITMOS")
+    print("RESULTADOS DE EVALUACIÓN")
     print("=" * 80)
     
     if problem_description:
-        print(f"🎯 Problema: {problem_description}")
+        print(f"Problema: {problem_description}")
         print("-" * 80)
     
     # Separar resultados exitosos y fallidos
@@ -368,7 +354,7 @@ def generate_comprehensive_report(
         # Ordenar por costo de solución y tiempo de ejecución
         successful_algorithms.sort(key=lambda x: (x.solution_cost, x.execution_time_seconds))
         
-        print("\n✅ ANÁLISIS DE ALGORITMOS EXITOSOS")
+        print("\nALGORITMOS EVALUADOS")
         print("=" * 80)
         
         for rank, metrics in enumerate(successful_algorithms, 1):
@@ -384,18 +370,18 @@ def generate_comprehensive_report(
             
             print(f"\n{medal}: {metrics.algorithm_name}")
             print("─" * 60)
-            print(f"  📈 Métricas de Rendimiento:")
-            print(f"     • Tiempo de ejecución: {format_execution_time(metrics.execution_time_seconds)}")
-            print(f"     • Costo de la solución: {metrics.solution_cost:.4f} unidades")
-            print(f"     • Longitud del camino: {metrics.path_length} nodos")
-            print(f"     • Memoria máxima utilizada: {format_memory_usage(metrics.peak_memory_mb * 1024 * 1024)}")
+            print(f"    Métricas de Rendimiento:")
+            print(f"        Tiempo de ejecución: {format_execution_time(metrics.execution_time_seconds)}")
+            print(f"        Costo de la solución: {metrics.solution_cost:.4f} unidades")
+            print(f"        Longitud del camino: {metrics.path_length} nodos")
+            print(f"        Memoria máxima utilizada: {format_memory_usage(metrics.peak_memory_mb * 1024 * 1024)}")
             
             if metrics.nodes_explored_count > 0:
                 efficiency = metrics.nodes_explored_count / metrics.execution_time_seconds if metrics.execution_time_seconds > 0 else 0
-                print(f"     • Nodos explorados: {metrics.nodes_explored_count:,}")
-                print(f"     • Eficiencia de exploración: {efficiency:.0f} nodos/segundo")
+                print(f"        Nodos explorados: {metrics.nodes_explored_count:,}")
+                print(f"        Eficiencia de exploración: {efficiency:.0f} nodos/segundo")
             
-            print(f"  🛤️  Ruta de la solución:")
+            print(f"    Ruta de la solución:")
             print(f"     {metrics.solution_path}")
     
     # Análisis de algoritmos fallidos
@@ -404,76 +390,6 @@ def generate_comprehensive_report(
         print("=" * 80)
         for metrics in failed_algorithms:
             print(f"  • {metrics.algorithm_name}: {metrics.error_description or 'Sin solución encontrada'}")
-    
-    # Estadísticas comparativas
-    if len(successful_algorithms) > 1:
-        print(f"\n\n📊 ANÁLISIS ESTADÍSTICO COMPARATIVO")
-        print("=" * 80)
-        
-        # Métricas de costos
-        costs = [m.solution_cost for m in successful_algorithms]
-        best_cost = min(costs)
-        worst_cost = max(costs)
-        avg_cost = sum(costs) / len(costs)
-        
-        print(f"  💰 Análisis de Costos:")
-        print(f"     • Mejor costo: {best_cost:.4f}")
-        print(f"     • Peor costo: {worst_cost:.4f}")
-        print(f"     • Costo promedio: {avg_cost:.4f}")
-        print(f"     • Variación: {((worst_cost - best_cost) / best_cost * 100):.1f}%")
-        
-        # Métricas de tiempo
-        times = [m.execution_time_seconds for m in successful_algorithms]
-        fastest_time = min(times)
-        slowest_time = max(times)
-        avg_time = sum(times) / len(times)
-        
-        print(f"\n  ⏱️  Análisis de Tiempos:")
-        print(f"     • Más rápido: {format_execution_time(fastest_time)}")
-        print(f"     • Más lento: {format_execution_time(slowest_time)}")
-        print(f"     • Tiempo promedio: {format_execution_time(avg_time)}")
-        
-        # Métricas de memoria
-        memories = [m.peak_memory_mb for m in successful_algorithms]
-        min_memory = min(memories)
-        max_memory = max(memories)
-        avg_memory = sum(memories) / len(memories)
-        
-        print(f"\n  💾 Análisis de Memoria:")
-        print(f"     • Menor uso: {format_memory_usage(min_memory * 1024 * 1024)}")
-        print(f"     • Mayor uso: {format_memory_usage(max_memory * 1024 * 1024)}")
-        print(f"     • Uso promedio: {format_memory_usage(avg_memory * 1024 * 1024)}")
-        
-        # Algoritmo más equilibrado (mejor balance costo-tiempo-memoria)
-        def calculate_efficiency_score(metrics):
-            # Normalizar métricas (menor es mejor)
-            norm_cost = metrics.solution_cost / best_cost
-            norm_time = metrics.execution_time_seconds / fastest_time
-            norm_memory = metrics.peak_memory_mb / min_memory
-            return norm_cost + norm_time + norm_memory
-        
-        most_balanced = min(successful_algorithms, key=calculate_efficiency_score)
-        
-        print(f"\n  🎯 Algoritmo Más Equilibrado:")
-        print(f"     • {most_balanced.algorithm_name}")
-        print(f"     • Puntaje de eficiencia: {calculate_efficiency_score(most_balanced):.2f}")
-    
-    # Recomendaciones
-    print(f"\n\n💡 RECOMENDACIONES DE USO")
-    print("=" * 80)
-    
-    if successful_algorithms:
-        best_cost_algo = min(successful_algorithms, key=lambda x: x.solution_cost)
-        fastest_algo = min(successful_algorithms, key=lambda x: x.execution_time_seconds)
-        most_memory_efficient = min(successful_algorithms, key=lambda x: x.peak_memory_mb)
-        
-        print(f"  • Para MEJOR COSTO: {best_cost_algo.algorithm_name}")
-        print(f"  • Para MAYOR VELOCIDAD: {fastest_algo.algorithm_name}")
-        print(f"  • Para MENOR USO DE MEMORIA: {most_memory_efficient.algorithm_name}")
-        
-        if len(successful_algorithms) > 1:
-            most_balanced = min(successful_algorithms, key=calculate_efficiency_score)
-            print(f"  • Para USO GENERAL: {most_balanced.algorithm_name}")
 
 
 def execute_problem_comparison_suite(
@@ -505,7 +421,7 @@ def execute_problem_comparison_suite(
         print("─" * 70)
         
         # Ejecutar benchmark para este problema
-        problem_results = execute_comprehensive_benchmark(
+        problem_results = execute_benchmark(
             problem_instance, 
             algorithm_collection,
             enable_realtime_monitoring=True,
@@ -516,7 +432,7 @@ def execute_problem_comparison_suite(
         
         # Mostrar resultados inmediatamente si se solicita
         if detailed_analysis:
-            generate_comprehensive_report(problem_results, problem_name)
+            generate_report(problem_results, problem_name)
             print("\n" + "="*60)
             input("📋 Presiona ENTER para continuar con el siguiente problema...")
     

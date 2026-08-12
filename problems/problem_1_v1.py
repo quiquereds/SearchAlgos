@@ -20,7 +20,7 @@ Grafo: 38 nodos (0-37) con conexiones ponderadas
 from algorithms.astar import astar
 from algorithms.dijkstra_multi_goal import dijkstra_multi_goal
 from algorithms.ucs_multi_goal import multi_ucs
-from components.benchmark_v2 import execute_comprehensive_benchmark, generate_comprehensive_report
+from components.benchmark_v2 import execute_benchmark, generate_report
 from components.problem import Problem
 from components.state import State
 
@@ -159,14 +159,14 @@ def execute_cable_installation_analysis():
         f"Costo promedio de cable: {problem_summary['average_cable_cost']:.2f} metros"
     )
     
-    print("🏗️  ANÁLISIS")
+    print("PROBLEMA")
     print("=" * 80)
     print(problem_description)
     print("=" * 80)
-    print("\n🔧 Iniciando evaluación de algoritmos de optimización...")
+    print("\nINICIANDO EVALUACIÓN...")
     
     # Ejecutar benchmark integral
-    performance_results = execute_comprehensive_benchmark(
+    performance_results = execute_benchmark(
         problem_instance=problem_instance,
         algorithm_suite=optimization_algorithms,
         enable_realtime_monitoring=True,
@@ -174,29 +174,10 @@ def execute_cable_installation_analysis():
     )
     
     # Generar reporte profesional
-    generate_comprehensive_report(
+    generate_report(
         performance_metrics=performance_results,
         problem_description="Optimización del uso de cable en residenciales"
     )
-    
-    # Información técnica adicional
-    print("\n\n📋 INFORMACIÓN TÉCNICA DETALLADA")
-    print("=" * 80)
-    print("🔹 Algoritmos evaluados:")
-    print("   • A*: Búsqueda heurística con función de evaluación f(n) = g(n) + h(n)")
-    print("   • UCS Multi-Goal: Búsqueda de costo uniforme adaptada para múltiples objetivos")
-    print("   • Dijkstra Multi-Objetivo: Algoritmo de Dijkstra modificado para problemas multi-objetivo")
-    print("\n🔹 Optimizaciones implementadas:")
-    print("   • Cálculo de costo real de cables únicos (sin duplicar costos de regreso)")
-    print("   • Seguimiento de nodos explorados para análisis de eficiencia")
-    print("   • Monitoreo de memoria en tiempo real")
-    print("   • Heurística optimizada para distancias en grafo")
-    print("\n🔹 Métricas de evaluación:")
-    print("   • Tiempo de ejecución")
-    print("   • Costo de la solución (metros de cable)")
-    print("   • Eficiencia (nodos explorados/segundo)")
-    print("   • Uso de memoria (pico máximo)")
-    print("   • Longitud del camino de solución")
     
     return performance_results
 
