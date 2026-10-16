@@ -34,7 +34,7 @@ class CableInstallationProblem:
     
     def __init__(self):
         self.network_nodes = {str(node_id): State(str(node_id)) for node_id in range(0, 38)}
-        self.target_nodes = ['0', '1', '2', '3', '4', '5', '6', '12', '13', '16', '17', '18', '19', '24', '26', '27', '29', '33', '34', '35', '36', '37']
+        self.target_nodes = [str(i) for i in range(0, 38)]
         self.network_topology = [
                 ('0', '1', 2.0),
                 ('0', '20', 3.8),

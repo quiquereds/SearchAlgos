@@ -33,18 +33,22 @@ class CableInstallationProblem:
     """Clase para gestionar el problema de instalación de cables"""
     
     def __init__(self):
-        self.network_nodes = {str(node_id): State(str(node_id)) for node_id in range(1, 62)}
-        self.target_nodes = ['1', '2', '3', '4', '5', '6', '14', '15', '24', '25', '26', '27', '28', '50']
+        self.network_nodes = {str(node_id): State(str(node_id)) for node_id in range(0, 62)}
+        self.target_nodes = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28']
         self.network_topology = [
+                ('0', '6', 4.8),
+                ('0', '17', 6.2),
+                ('0', '7', 3.8),
+                ('0', '2', 5.2),
                 ('1', '6', 3.5),
-                ('2', '50', 5.2),
+                ('2', '0', 5.2),
                 ('2', '7', 4.7),
                 ('3', '8', 4.8),
                 ('4', '9', 5.2),
                 ('5', '13', 4.2),
-                ('6', '50', 4.8),
+                ('6', '0', 4.8),
                 ('6', '16', 4.5),
-                ('7', '50', 3.8),
+                ('7', '0', 3.8),
                 ('7', '17', 3.2),
                 ('7', '8', 3.4),
                 ('8', '3', 4.8),
@@ -65,7 +69,7 @@ class CableInstallationProblem:
                 ('15', '16', 4.3),
                 ('16', '38', 4.5),
                 ('16', '29', 5.5),
-                ('17', '50', 6.2),
+                ('17', '0', 6.2),
                 ('17', '24', 3.3),
                 ('17', '30', 3.8),
                 ('17', '18', 3.5),
@@ -192,18 +196,12 @@ def execute_cable_installation_analysis():
 
     # Algoritmos adaptados
     multi_algorithms = {
-        "A* Multi-Goal": astar,
-        "UCS Multi-Goal": multi_ucs,
         "Dijkstra Multi-Goal": dijkstra_multi_goal,
     }
 
     # Algoritmos tradicionales 
     traditional_algorithms = {
-        "BFS Tradicional": bfs,
-        "DFS Tradicional": dfs,
-        "UCS Tradicional": ucs,
         "Dijkstra Tradicional": dijkstra,
-        "A* Tradicional": astar,
     }
 
     print("PROBLEMA")
