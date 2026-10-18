@@ -84,10 +84,10 @@ def run_experiment(experiment, trace_memory, time_limit, memory_limit_bytes, sho
             peak_rss = max(peak_rss, watcher.memory_info().rss)
         except psutil.NoSuchProcess:
             break
-        if elapsed > time_limit:
+        if time_limit and elapsed > time_limit:
             stop_reason = f"límite de tiempo ({_format_duration(time_limit)})"
-        elif peak_rss > memory_limit_bytes:
-            stop_reason = f"límite de memoria ({memory_limit_bytes / 1024**3:.0f} GB)"
+        elif memory_limit_bytes and peak_rss > memory_limit_bytes:
+            stop_reason = f"límite de memoria ({memory_limit_bytes / 1024**3:g} GB)"
         if stop_reason:
             process.terminate()
             process.join()
@@ -235,8 +235,12 @@ def parse_args(argv=None):
     parser.add_argument(
         "--trace-memory", action="store_true", help="repite la corrida con tracemalloc para el pico de Python"
     )
-    parser.add_argument("--time-limit", type=float, default=3600, help="segundos por experimento (3600)")
-    parser.add_argument("--memory-limit-gb", type=float, default=16, help="RSS máximo por experimento (16)")
+    parser.add_argument(
+        "--time-limit", type=float, default=3600, help="segundos por experimento (3600); 0 = sin límite"
+    )
+    parser.add_argument(
+        "--memory-limit-gb", type=float, default=16, help="RSS máximo por experimento en GB (16); 0 = sin límite"
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("results"))
     return parser.parse_args(argv)
 

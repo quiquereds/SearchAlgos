@@ -49,7 +49,7 @@ def evaluate(experiment, ilp_time_limit):
     row["tm_edges"] = [list(edge) for edge in heuristic.edges]
 
     started = time.perf_counter()
-    exact = steiner_ilp(plan.nodes, plan.edges, root, terminals, time_limit=ilp_time_limit)
+    exact = steiner_ilp(plan.nodes, plan.edges, root, terminals, time_limit=ilp_time_limit or None)
     row["ilp_time_s"] = time.perf_counter() - started
     row["ilp_status"] = exact.status
     row["ilp_bound_m"] = exact.lower_bound
@@ -132,7 +132,10 @@ def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--only", nargs="+", metavar="ID", help="ids de experimento, por ejemplo 1.1 2.3")
     parser.add_argument(
-        "--ilp-time-limit", type=float, default=600, help="segundos máximos del ILP por experimento (600)"
+        "--ilp-time-limit",
+        type=float,
+        default=600,
+        help="segundos máximos del ILP por experimento (600); 0 = sin límite",
     )
     parser.add_argument("--output-dir", type=Path, default=Path("results"))
     return parser.parse_args(argv)
